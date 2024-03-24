@@ -574,6 +574,92 @@ dependencies = [
 ]
 
 [[package]]
+name = "barkeel_derives"
+version = "0.1.0"
+dependencies = [
+ "Inflector",
+ "barkeel_lib 0.1.0 (git+https://github.com/pierremarcade/barkeel-lib.git)",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.52",
+ "tera",
+]
+
+[[package]]
+name = "barkeel_lib"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "aws-config",
+ "aws-sdk-s3",
+ "axum",
+ "chrono",
+ "crossbeam-channel",
+ "dotenvy",
+ "futures",
+ "lazy_static",
+ "lettre",
+ "num_cpus",
+ "quote",
+ "rand",
+ "redis",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "syn 1.0.109",
+ "tokio",
+]
+
+[[package]]
+name = "barkeel_lib"
+version = "0.1.0"
+source = "git+https://github.com/pierremarcade/barkeel-lib.git#29aa716a5820ff08cdc4c214671746b510233324"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "aws-config",
+ "aws-sdk-s3",
+ "axum",
+ "chrono",
+ "crossbeam-channel",
+ "dotenvy",
+ "futures",
+ "lazy_static",
+ "lettre",
+ "num_cpus",
+ "quote",
+ "rand",
+ "redis",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "syn 1.0.109",
+ "tokio",
+]
+
+[[package]]
+name = "barkeel_web"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "axum",
+ "barkeel_derives",
+ "barkeel_lib 0.1.0",
+ "chrono",
+ "diesel",
+ "dotenvy",
+ "env_logger",
+ "r2d2",
+ "redis",
+ "serde",
+ "serde_json",
+ "tera",
+ "tokio",
+ "tower-http",
+]
+
+[[package]]
 name = "base16ct"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2294,65 +2380,6 @@ name = "rustversion"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
-
-[[package]]
-name = "rusty_derives"
-version = "0.1.0"
-dependencies = [
- "Inflector",
- "proc-macro2",
- "quote",
- "rusty_lib",
- "syn 2.0.52",
- "tera",
-]
-
-[[package]]
-name = "rusty_lib"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "aws-config",
- "aws-sdk-s3",
- "axum",
- "chrono",
- "crossbeam-channel",
- "dotenvy",
- "futures",
- "lazy_static",
- "lettre",
- "num_cpus",
- "quote",
- "rand",
- "redis",
- "serde",
- "serde_json",
- "serde_yaml",
- "syn 1.0.109",
- "tokio",
-]
-
-[[package]]
-name = "rusty_web"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "axum",
- "chrono",
- "diesel",
- "dotenvy",
- "env_logger",
- "r2d2",
- "redis",
- "rusty_derives",
- "rusty_lib",
- "serde",
- "serde_json",
- "tera",
- "tokio",
- "tower-http",
-]
 
 [[package]]
 name = "ryu"
