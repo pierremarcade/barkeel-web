@@ -1,0 +1,35 @@
+<div class="sm:col-span-3">
+    <label for="{}"
+        class="block text-sm font-medium leading-6 text-gray-900">{}</label>
+    <div class="mt-2">
+        <select id="{}" name="{}" {} {}
+            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+            {}
+        </select>
+    </div>
+</div>
+<script>
+    function chargerOptionsSelect() {
+    const url = '{}';
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error when fetching options');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const select = document.getElementById('{}');
+            data.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option['{}'];
+                opt.textContent = option['{}'];
+                select.appendChild(opt);
+            });
+        })
+        .catch(error => {
+            console.error('Error when fetching options:', error);
+        });
+}
+
+</script>

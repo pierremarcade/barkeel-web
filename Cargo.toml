@@ -1,0 +1,46 @@
+[package]
+name = "barkeel_web"
+version = "0.1.0"
+edition = "2021"
+
+[workspace.package]
+rust-version = "1.77"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+redis = { version = "0.21", features = ["aio", "tokio-comp"] }
+async-trait = "0.1"
+axum = "0.7"
+chrono = { version = "0.4", features = ["serde"] }
+serde = "1.0"
+serde_json = "1.0"
+diesel = { version = "2.1", features = ["extras"] }
+r2d2 = "0.8"
+dotenvy = "0.15"
+env_logger = "0.11"
+tokio = { version = "1.36", features = ["sync"] }
+tower-http = { version = "0.5", features = ["cors"] }
+# image = "0.25.0"
+barkeel_derives = { git = "https://github.com/pierremarcade/barkeel-derives.git"}
+barkeel_lib = { git = "https://github.com/pierremarcade/barkeel-lib.git"}
+
+[dependencies.tera]
+version = "1.19"
+optional = true
+
+[features]
+default = ["postgres", "web"]
+postgres = ["diesel/postgres"]
+mysql = ["diesel/mysql"]
+sqlite = ["diesel/sqlite"]
+web= ["tera"]
+api= []
+
+[[bin]]
+name="web"
+path="src/main.rs"
+
+[[bin]]
+name="worker"
+path="src/bin/worker/main.rs"
