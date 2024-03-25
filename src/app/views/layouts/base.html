@@ -21,38 +21,43 @@
       {% include "footer.html" %}
     </div>
     <script>
-          document.addEventListener('DOMContentLoaded', function() {
-          // Sélectionne tous les éléments avec la classe .configurator
-          var configuratorElements = document.querySelectorAll('.configurator');
-      
-          configuratorElements.forEach(function(selectElement) {
-              var url = selectElement.getAttribute('data-url'); // Récupère l'URL à partir de l'attribut data-url
-      
-              // Exécute une requête AJAX pour charger les options
-              fetch(url)
-                  .then(function(response) {
-                      if (!response.ok) {
-                          throw new Error('Erreur réseau lors du chargement des options');
-                      }
-                      return response.json();
-                  })
-                  .then(function(data) {
-                      // Supprime les options existantes
-                      selectElement.innerHTML = '';
-      
-                      // Ajoute les nouvelles options
-                      Object.keys(data).forEach(function(key) {
-                          var option = document.createElement('option');
-                          option.value = key;
-                          option.textContent = data[key];
-                          selectElement.appendChild(option);
-                      });
-                  })
-                  .catch(function(error) {
-                      console.error('Erreur lors du chargement des options:', error);
+      document.addEventListener('DOMContentLoaded', function() {
+      // Sélectionne tous les éléments avec la classe .configurator
+      var configuratorElements = document.querySelectorAll('.configurator');
+  
+      configuratorElements.forEach(function(selectElement) {
+          var url = selectElement.getAttribute('data-url'); // Récupère l'URL à partir de l'attribut data-url
+  
+          // Exécute une requête AJAX pour charger les options
+          fetch(url, {
+              method: 'GET', // La méthode HTTP à utiliser pour la requête
+              headers: {
+                  'Content-Type': 'application/json' // Ajoute l'en-tête Content-Type
+              }
+          })
+              .then(function(response) {
+                  if (!response.ok) {
+                      throw new Error('Erreur réseau lors du chargement des options');
+                  }
+                  return response.json();
+              })
+              .then(function(data) {
+                  // Supprime les options existantes
+                  selectElement.innerHTML = '';
+  
+                  // Ajoute les nouvelles options
+                  Object.keys(data).forEach(function(key) {
+                      var option = document.createElement('option');
+                      option.value = data[key][selectElement.getAttribute('data-id')];
+                      option.textContent = data[key][selectElement.getAttribute('data-value')];
+                      selectElement.appendChild(option);
                   });
-          });
+              })
+              .catch(function(error) {
+                  console.error('Erreur lors du chargement des options:', error);
+              });
       });
+  });
   
     </script>
   </body>
