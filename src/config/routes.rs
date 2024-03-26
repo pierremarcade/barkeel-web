@@ -1,4 +1,4 @@
-use axum::{ extract::Path, routing::get, Router,  http::{header, HeaderMap, StatusCode}, response::IntoResponse };
+use axum::{ extract::Path, routing::{get, post}, Router,  http::{header, HeaderMap, StatusCode}, response::IntoResponse };
 use std::sync::Arc;
 use crate::config::application::Config;
 use crate::app::controllers::*;
@@ -18,6 +18,10 @@ pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
             //         move |body| backups_policy_controller::create(body, config)
             //     }),
             // )
+            .route("/articles", get(article_controller::index))
+            .route("/articles/create", post(article_controller::create))
+            .route("/articles/:id", get(article_controller::show))
+            .route("/articles/:id/edit", get(article_controller::edit))
             .fallback(handler_404)
 }
 
