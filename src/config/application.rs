@@ -45,7 +45,7 @@ impl Loader {
         let shared_state = Arc::new(Config { database: database.clone(), template: tera, csrf_manager: CSRFManager::new() });
         let cors = CorsLayer::new().allow_origin(Any);
 
-        let app = routes::routes()
+        let app = routes::routes(shared_state)
             .with_state(shared_state)
             .layer(cors);
         
