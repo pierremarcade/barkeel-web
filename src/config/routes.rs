@@ -1,8 +1,20 @@
-use axum::{ extract::{ State, Path}, routing::{get, post, patch, delete}, Router,  http::{header, HeaderMap, StatusCode}, response::IntoResponse };
+use axum::{ 
+    extract::{ State, Path},
+    BoxError,
+    routing::{get, post, patch, delete}, 
+    Router,  
+    http::{header, HeaderMap, StatusCode}, 
+    response::IntoResponse,
+    error_handling::HandleErrorLayer,
+};
 use std::sync::Arc;
 use tera::{Context, Tera};
 use crate::config::application::Config;
 use crate::app::controllers::*;
+use std::time::Duration;
+use tower::ServiceBuilder;
+use tokio::time::error;
+
 
 //Add here new route
 pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
@@ -32,7 +44,26 @@ pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
             .route("/articles/:id", get(article_controller::show))
             .route("/articles/:id", delete(article_controller::delete))
             .route("/articles/:id/edit", get(article_controller::edit))
+            // .layer(
+            //     ServiceBuilder::new()
+            //         .layer(HandleErrorLayer::new(handle_timeout_error))
+            //         //.timeout(Duration::from_secs(30))
+            // )
             .fallback(handler_404)
+}
+
+async fn handle_timeout_error(err: BoxError) -> (StatusCode, String) {
+    if err.is::<error::Elapsed>() {
+        (
+            StatusCode::REQUEST_TIMEOUT,
+            "Request took too long".to_string(),
+        )
+    } else {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Unhandled internal error: {err}"),
+        )
+    }
 }
 
 async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
