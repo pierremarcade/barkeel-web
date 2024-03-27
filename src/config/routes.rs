@@ -25,11 +25,12 @@ pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
             .fallback(handler_404)
 }
 
-async fn handler_404() -> impl IntoResponse {
-    (
-        StatusCode::NOT_FOUND,
-        "The requested resource was not found",
-    )
+async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
+    let mut headers = HeaderMap::new();
+    headers.insert(header::CONTENT_TYPE, "text/html".parse().unwrap());
+    let tera: &Tera = &config.template;
+    let rendered = tera.render("404.html", &Context::new()).unwrap();
+    (StatusCode::NOT_FOUND, headers, rendered)
 }
 
 static THEME_CSS: &str = include_str!("../public/css/main.css");
