@@ -55,23 +55,22 @@ function populateSelectOptions(selectElement, data) {
 function populateRadioOptions(radioElement, data) {
     radioElement.innerHTML = ''; // Vider le contenu actuel
     Object.keys(data).forEach(function(key) {
-        var id = data[key][radioElement.getAttribute('data-id')];
         var name = radioElement.getAttribute('data-name');
-        var value = data[key][radioElement.getAttribute('data-value')];
+        var value = data[key][radioElement.getAttribute('data-id')];
         var labelText = data[key][radioElement.getAttribute('data-label')];
-        var selected = data[key][radioElement.getAttribute('data-selected')];
+        var selected = radioElement.getAttribute('data-selected');
 
-        var radioHtml = createRadioInput(id, name, value, labelText, selected);
+        var radioHtml = createRadioInput(name, value, labelText, selected);
         radioElement.innerHTML += radioHtml; // Ajouter le nouveau radio
     });
 }
 
-function createRadioInput(id, name, value, labelText, selected) {
+function createRadioInput(name, value, labelText, selected) {
     return `
         <div class="sm:col-span-4">
-            <input id="${id}" name="${name}" value="${value}" ${selected == value ? 'checked' : ''} type="radio"
+            <input id="${name}" name="${name}" value="${value}" ${selected == value ? 'checked' : ''} type="radio"
                 class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-            <label for="${id}"
+            <label for="${name}"
                 class="block text-sm font-medium leading-6 text-gray-900">${labelText}</label>
         </div>
     `;

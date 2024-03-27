@@ -1,11 +1,11 @@
 use crate::config::application::Config;
-use crate::app::models::user_model::{ User, UserCreate };
+use crate::app::models::user_model::{ User, UserCreate, UserEdit };
 use crate::db::schema::users::dsl::*;
 use diesel::prelude::*;
 use std::sync::Arc;
 use serde_json::Value;
 use tera::{Context, Tera};
-use axum::{ extract::{Json, Path, State}, response:: { Html, IntoResponse, Redirect }, http::{ HeaderMap } };
+use axum::{ extract::{Path, State}, response:: { Html, IntoResponse, Redirect }, http::{ HeaderMap }, Form};
 use barkeel_lib::html::{ get_content_type, response };
 
 pub async fn index(headers: HeaderMap, State(config): State<Arc<Config>>) -> impl IntoResponse {
@@ -21,6 +21,7 @@ pub async fn index(headers: HeaderMap, State(config): State<Arc<Config>>) -> imp
         tera.add_raw_template("user/index.html", include_str!("../views/user/index.html")).unwrap();
         let mut context = Context::new();
         context.insert("title", "User");
+        context.insert("base_url", "/users");
         context.insert("description", "A list of all the users in your account including their name, title, email and role.");
         context.insert("datas", &results);
 
@@ -52,19 +53,18 @@ pub async fn new(State(config): State<Arc<Config>>) -> impl IntoResponse {
 
     let mut context = Context::new();
     let config_ref = config.as_ref();
-    context.insert("data",&UserCreate::new().build_form(config_ref, "user/index"));
+    context.insert("data",&UserCreate::new().build_form(config_ref, "/users"));
 
     let rendered = tera.render("user/new.html", &context).unwrap();
     Html(rendered)
 }
 
-pub async fn create(Json(payload): Json<Value>, State(config): State<Arc<Config>>)  -> Redirect {
-    let data: User = serde_json::from_value(payload).unwrap();
+pub async fn create(Form(payload): Form<UserEdit>, config: Arc<Config>)  -> Redirect {
     let _inserted_record: User = diesel::insert_into(users)
-        .values((id.eq(data.id), name.eq(data.name)))
+        .values(name.eq(payload.name))
         .get_result(&mut config.database.pool.get().unwrap())
         .expect("Error inserting data");
-    Redirect::to("user/index") 
+    Redirect::to("/users") 
 }
 
 pub async fn edit(Path(user_id): Path<i64>, State(config): State<Arc<Config>>) -> impl IntoResponse {
@@ -78,20 +78,19 @@ pub async fn edit(Path(user_id): Path<i64>, State(config): State<Arc<Config>>) -
 
     let mut context = Context::new();
     let config_ref = config.as_ref();
-    context.insert("data", &result.build_form(config_ref, "user/index"));
+    context.insert("data", &result.build_form(config_ref, format!("/users/{}", user_id).as_str()));
 
     let rendered = tera.render("user/edit.html", &context).unwrap();
     Html(rendered)
 }
 
-pub async fn update( Path(user_id): Path<i64>, Json(payload): Json<Value>, State(config): State<Arc<Config>>) -> Redirect {
-    let data: User = serde_json::from_value(payload).unwrap();
+pub async fn update( Path(user_id): Path<i64>, Form(payload): Form<UserEdit>, config: Arc<Config>) -> Redirect {
     let _updated_record: User = diesel::update(users)
         .filter(id.eq(user_id))
-        .set((id.eq(data.id), name.eq(data.name)))
+        .set(name.eq(payload.name))
         .get_result(&mut config.database.pool.get().unwrap())
         .expect("Error updating data");
-    Redirect::to("user/index") 
+    Redirect::to("/users") 
 }
 
 pub async fn delete(Path(user_id): Path<i64>, State(config): State<Arc<Config>>) -> Redirect {
@@ -99,5 +98,5 @@ pub async fn delete(Path(user_id): Path<i64>, State(config): State<Arc<Config>>)
         .filter(id.eq(user_id))
         .execute(&mut config.database.pool.get().unwrap())
         .expect("Error deleting data");
-    Redirect::to("user/index") 
+    Redirect::to("/users") 
 }

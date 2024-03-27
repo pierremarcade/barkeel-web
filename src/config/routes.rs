@@ -1,5 +1,6 @@
-use axum::{ extract::Path, routing::{get, post}, Router,  http::{header, HeaderMap, StatusCode}, response::IntoResponse };
+use axum::{ extract::{ State, Path}, routing::{get, post, patch, delete}, Router,  http::{header, HeaderMap, StatusCode}, response::IntoResponse };
 use std::sync::Arc;
+use tera::{Context, Tera};
 use crate::config::application::Config;
 use crate::app::controllers::*;
 
@@ -9,18 +10,27 @@ pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
             .route("/", get(index_controller::index))
             .route("/public/*path", get(handle_assets))
 		    .route("/users", get(user_controller::index))
+            .route("/users/new", get(user_controller::new))
             .route("/users/:id", get(user_controller::show))
             .route("/users/:id/edit", get(user_controller::edit))
-            .route("/users/new", get(user_controller::new))
-            // .route(
-            //     "/policies",
-            //     post({
-            //         move |body| backups_policy_controller::create(body, config)
-            //     }),
-            // )
+            .route(
+                "/articles",
+                post({
+                    let conflig_clone = config.clone();
+                    move |body| article_controller::create(body, conflig_clone)
+                }),
+            )
+            .route(
+                "/articles/:id",
+                post({
+                    let config_clone = config.clone();
+                    move |id, body| article_controller::update(id, body, config_clone)
+                }),
+            )
             .route("/articles", get(article_controller::index))
-            .route("/articles/create", post(article_controller::create))
+            .route("/articles/new", get(article_controller::new))
             .route("/articles/:id", get(article_controller::show))
+            .route("/articles/:id", delete(article_controller::delete))
             .route("/articles/:id/edit", get(article_controller::edit))
             .fallback(handler_404)
 }
