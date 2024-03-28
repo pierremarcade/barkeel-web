@@ -41,6 +41,7 @@ impl Loader {
             ("header.html", include_str!("../app/views/layouts/header.html")),
             ("footer.html", include_str!("../app/views/layouts/footer.html")),
             ("404.html", include_str!("../app/views/errors/404.html")),
+            ("400.html", include_str!("../app/views/errors/400.html")),
         ])?;
         let database = Self::init_database()?;
         let shared_state = Arc::new(Config { database: database.clone(), template: tera, csrf_manager: CSRFManager::new() });
