@@ -3,7 +3,6 @@ use axum::{ extract::State, BoxError, response:: { Html, IntoResponse }, http::{
 use tera::{Context, Tera};
 use crate::config::application::Config;
 use std::sync::Arc;
-use std::time::Duration;
 use tokio::time::error;
 
 pub async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
