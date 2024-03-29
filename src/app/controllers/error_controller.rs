@@ -1,16 +1,15 @@
 
-use axum::{ extract::State, BoxError, response:: { Html, IntoResponse }, http::{header, HeaderMap, StatusCode} };
+use axum::{ extract::State, BoxError, response::IntoResponse, http::StatusCode };
 use tera::{Context, Tera};
 use crate::config::application::Config;
 use std::sync::Arc;
 use tokio::time::error;
+use barkeel_lib::html::response;
 
 pub async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
-    let mut headers = HeaderMap::new();
-    headers.insert(header::CONTENT_TYPE, "text/html".parse().unwrap());
     let tera: &Tera = &config.template;
     let rendered = tera.render("404.html", &Context::new()).unwrap();
-    (StatusCode::NOT_FOUND, headers, rendered)
+    response(StatusCode::NOT_FOUND, "text/html", rendered)
 }
 
 pub async fn handle_timeout_error(err: BoxError) -> (StatusCode, String) {
