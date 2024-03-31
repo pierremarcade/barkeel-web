@@ -4,7 +4,7 @@ use tera::{Context, Tera};
 use crate::config::application::Config;
 use std::sync::Arc;
 use tokio::time::error;
-use crate::app::utils::{ get_content_type, response::Response };
+use crate::app::utils::response::Response;
 
 pub async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
     render_404(config)
@@ -18,7 +18,7 @@ pub fn render_404(config: Arc<Config>) -> Response<'static> {
 
 pub fn handler_error(config: Arc<Config>, status_code: StatusCode, message: String) -> Response<'static> {
     let tera: &Tera = &config.template;
-    let mut tera = tera.clone();
+    let tera = tera.clone();
     let mut context = Context::new();
     context.insert("code", &status_code.to_string());
     context.insert("messge", &message);

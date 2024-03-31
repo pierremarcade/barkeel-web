@@ -31,9 +31,7 @@ pub async fn unique_id_middleware(request: Request, next: Next) -> Response {
         }
     }
     let unique_id = generate_unique_id();
-    let cookie = Cookie::build(("unique_id", unique_id))
-    .path("/")
-    .http_only(true).finish();
+    let cookie = Cookie::build(("unique_id", unique_id)).path("/").http_only(true);
     let mut response = next.run(request).await;
     response.headers_mut().insert(
         header::SET_COOKIE,

@@ -9,7 +9,7 @@ rust-version = "1.77"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-redis = { version = "0.24", features = ["aio", "tokio-comp"] }
+redis = { version = "0.25", features = ["aio", "tokio-comp"] }
 async-trait = "0.1"
 axum = "0.7"
 chrono = { version = "0.4", features = ["serde"] }
