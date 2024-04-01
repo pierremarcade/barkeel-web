@@ -19,13 +19,6 @@ pub fn routes() -> Router<Arc<Config>> {
             // .route("/users/new", get(user_controller::new))
             // .route("/users/:id", get(user_controller::show))
             // .route("/users/:id/edit", get(user_controller::edit))
-            // .route(
-            //     "/books",
-            //     post({
-            //         let conflig_clone = config.clone();
-            //         move |body| book_controller::create(body, conflig_clone)
-            //     }),
-            // )
             // .route("/books/:id", patch(book_controller::update))
             // .route("/books", post(book_controller::create))
             // .route("/", get(index_controller::index))

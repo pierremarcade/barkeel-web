@@ -18,21 +18,17 @@ pub fn get_content_type(headers: HeaderMap) -> String {
 
 pub fn csrf_token_is_valid(headers: HeaderMap, config: Arc<Config>, csrf_token: String) -> bool {
     if let Some(cookie_header) = headers.get(header::COOKIE) {
-        println!("COOKIE");
         if let Ok(cookie_str) = cookie_header.to_str() {
-            println!("header");
             for cookie in Cookie::split_parse(cookie_str) {
-                println!("parse");
                 let cookie = cookie.unwrap();
                 match cookie.name() {
                     "unique_id" => {
-                        println!("trouve");
                         let csrf_manager: &CSRFManager = &config.csrf_manager;
                         if csrf_manager.is_csrf_token_valid(cookie.value().to_string(), csrf_token.clone()) {
                             return true;
                         }
                     },
-                    _ => {}
+                    _ =>  return false
                 }
             }
         }
