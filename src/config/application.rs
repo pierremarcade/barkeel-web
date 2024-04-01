@@ -3,7 +3,7 @@ use crate::config::routes;
 use tower_http::cors::{Any, CorsLayer};
 use std::sync::Arc;
 #[cfg(feature = "postgres")]
-use barkeel_lib::form::CSRFManager;
+use barkeel_lib::csrf::CSRFManager;
 use crate::config::database::postgres::{Connector, Database};
 #[cfg(feature = "mysql")]
 use crate::config::database::mysql::{Connector, Database};
@@ -11,6 +11,7 @@ use crate::config::database::mysql::{Connector, Database};
 use crate::config::database::sqlite::{Connector, Database};
 use tera::Tera;
 use std::error::Error;
+use axum::extract::Extension;
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -60,7 +61,8 @@ impl Loader {
         let cors = CorsLayer::new().allow_origin(Any);
 
         let app = routes::routes(shared_state.clone())
-            .with_state(shared_state)
+            .with_state(shared_state.clone())
+            .layer(Extension(shared_state))
             .layer(cors);
         
         let host = std::env::var("HOST")?;

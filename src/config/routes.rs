@@ -14,8 +14,9 @@ use tower::ServiceBuilder;
 //Add here new route
 pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
     Router::new()
+            
+            .route_layer(middleware::from_fn(csrf::ensure_csrf_is_valid_middleware))
             .route("/", get(index_controller::index))
-            .route("/public/*path", get(index_controller::handle_assets))
 		    // .route("/users", get(user_controller::index))
             // .route("/users/new", get(user_controller::new))
             // .route("/users/:id", get(user_controller::show))
@@ -44,6 +45,7 @@ pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
                     .layer(HandleErrorLayer::new(error_controller::handle_timeout_error))
                     .timeout(Duration::from_secs(30))
             )
-            .route_layer(middleware::from_fn(unique_id::unique_id_middleware))
+            .route_layer(middleware::from_fn(csrf::unique_id_middleware))
             .fallback(error_controller::handler_404)
+            .route("/public/*path", get(index_controller::handle_assets))
 }

@@ -21,7 +21,7 @@ pub fn handler_error(config: Arc<Config>, status_code: StatusCode, message: Stri
     let tera = tera.clone();
     let mut context = Context::new();
     context.insert("code", &status_code.to_string());
-    context.insert("messge", &message);
+    context.insert("message", &message);
     let rendered = tera.render("error.html", &context).unwrap();
     Response{status_code, content_type: "text/html", datas: rendered}
 }
