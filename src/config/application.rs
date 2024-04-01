@@ -11,7 +11,9 @@ use crate::config::database::mysql::{Connector, Database};
 use crate::config::database::sqlite::{Connector, Database};
 use tera::Tera;
 use std::error::Error;
-use axum::extract::Extension;
+use axum::{extract::Extension, Router};
+use tower::layer::Layer;
+use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -60,15 +62,13 @@ impl Loader {
         let shared_state = Arc::new(Config { database: database.clone(), template: tera, csrf_manager });
         let cors = CorsLayer::new().allow_origin(Any);
 
-        let app = routes::routes()
-            .with_state(shared_state.clone())
-            .layer(Extension(shared_state))
-            .layer(cors);
+        let app = NormalizePathLayer::trim_trailing_slash().layer(routes::routes() .with_state(shared_state.clone())
+        .layer(Extension(shared_state)).layer(cors));
         
         let host = std::env::var("HOST")?;
         let port = std::env::var("PORT")?;
         let listener = tokio::net::TcpListener::bind(format!("{}:{}", host, port)).await?;
-        axum::serve(listener, app).await?;
+        axum::serve(listener, <NormalizePath<Router> as axum::ServiceExt<axum::http::Request<axum::body::Body>>>::into_make_service(app)).await?;
 
         Ok(())
     }
