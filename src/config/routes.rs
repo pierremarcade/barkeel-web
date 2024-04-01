@@ -12,34 +12,29 @@ use std::time::Duration;
 use tower::ServiceBuilder;
 
 //Add here new route
-pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
+pub fn routes() -> Router<Arc<Config>> {
     Router::new()
             
-            .route_layer(middleware::from_fn(csrf::ensure_csrf_is_valid_middleware))
-            .route("/", get(index_controller::index))
 		    // .route("/users", get(user_controller::index))
             // .route("/users/new", get(user_controller::new))
             // .route("/users/:id", get(user_controller::show))
             // .route("/users/:id/edit", get(user_controller::edit))
             // .route(
-            //     "/articles",
+            //     "/books",
             //     post({
             //         let conflig_clone = config.clone();
-            //         move |body| article_controller::create(body, conflig_clone)
+            //         move |body| book_controller::create(body, conflig_clone)
             //     }),
             // )
-            // .route(
-            //     "/articles/:id",
-            //     post({
-            //         let config_clone = config.clone();
-            //         move |id, body| article_controller::update(id, body, config_clone)
-            //     }),
-            // )
-            // .route("/articles", get(article_controller::index))
-            // .route("/articles/new", get(article_controller::new))
-            // .route("/articles/:id", get(article_controller::show))
-            // .route("/articles/:id", delete(article_controller::delete))
-            // .route("/articles/:id/edit", get(article_controller::edit))
+            // .route("/books/:id", patch(book_controller::update))
+            // .route("/books", post(book_controller::create))
+            // .route("/", get(index_controller::index))
+            // .route("/books", get(book_controller::index))
+            // .route("/books/new", get(book_controller::new))
+            // .route("/books/:id", get(book_controller::show))
+            // .route("/books/:id", delete(book_controller::delete))
+            // .route("/books/:id/edit", get(book_controller::edit))
+            
             .layer(
                 ServiceBuilder::new()
                     .layer(HandleErrorLayer::new(error_controller::handle_timeout_error))
