@@ -1,6 +1,6 @@
 use axum::http::HeaderMap;
 use axum::http::header;
-use barkeel_lib::csrf::CSRFManager;
+use barkeel_lib::session::CSRFManager;
 use cookie::Cookie;
 use std::sync::Arc;
 use crate::config::application::Config;

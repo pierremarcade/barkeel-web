@@ -586,7 +586,7 @@ name = "barkeel_derives"
 version = "0.1.0"
 dependencies = [
  "Inflector",
- "barkeel_lib 0.1.0 (git+https://github.com/pierremarcade/barkeel-lib.git)",
+ "barkeel_lib",
  "proc-macro2",
  "quote",
  "syn",
@@ -595,7 +595,8 @@ dependencies = [
 
 [[package]]
 name = "barkeel_lib"
-version = "0.1.0"
+version = "0.1.1"
+source = "git+https://github.com/pierremarcade/barkeel-lib.git#020dafe2bdcd172b29347d1ed2cfd962279f4ba5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -613,33 +614,6 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
- "tokio",
-]
-
-[[package]]
-name = "barkeel_lib"
-version = "0.1.0"
-source = "git+https://github.com/pierremarcade/barkeel-lib.git#0b507892decd8fd1189050ee19220480b799789a"
-dependencies = [
- "anyhow",
- "async-trait",
- "aws-config",
- "aws-sdk-s3",
- "axum",
- "chrono",
- "crossbeam-channel",
- "dotenvy",
- "futures",
- "lazy_static",
- "lettre",
- "num_cpus",
- "quote",
- "rand",
- "redis",
- "serde",
- "serde_json",
- "serde_yaml",
- "syn",
  "tokio",
 ]
 
@@ -650,7 +624,7 @@ dependencies = [
  "async-trait",
  "axum",
  "barkeel_derives",
- "barkeel_lib 0.1.0",
+ "barkeel_lib",
  "chrono",
  "cookie",
  "diesel",
@@ -2810,7 +2784,6 @@ dependencies = [
  "libc",
  "mio",
  "num_cpus",
- "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",

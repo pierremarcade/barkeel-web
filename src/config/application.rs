@@ -3,7 +3,6 @@ use crate::config::routes;
 use tower_http::cors::{Any, CorsLayer};
 use std::sync::Arc;
 #[cfg(feature = "postgres")]
-use barkeel_lib::csrf::CSRFManager;
 use crate::config::database::postgres::{Connector, Database};
 #[cfg(feature = "mysql")]
 use crate::config::database::mysql::{Connector, Database};
@@ -14,6 +13,7 @@ use std::error::Error;
 use axum::{extract::Extension, Router};
 use tower::layer::Layer;
 use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
+use barkeel_lib::session::CSRFManager;
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -66,8 +66,7 @@ impl Loader {
         .layer(Extension(shared_state)).layer(cors));
         
         let host = std::env::var("HOST")?;
-        let port = std::env::var("PORT")?;
-        let listener = tokio::net::TcpListener::bind(format!("{}:{}", host, port)).await?;
+        let listener = tokio::net::TcpListener::bind(host).await?;
         axum::serve(listener, <NormalizePath<Router> as axum::ServiceExt<axum::http::Request<axum::body::Body>>>::into_make_service(app)).await?;
 
         Ok(())
@@ -80,7 +79,7 @@ impl Loader {
     }
 
 	fn check_env_vars() -> Result<(), Box<dyn std::error::Error>> {
-		let required_vars = vec!["HOST", "PORT", "DATABASE_URL"];
+		let required_vars = vec!["HOST", "DATABASE_URL"];
 		for var in required_vars {
 			if std::env::var(var).is_err() {
 				return Err(format!("{} variable must be defined", var).into());
