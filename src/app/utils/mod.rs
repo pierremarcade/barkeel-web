@@ -6,6 +6,7 @@ use std::sync::Arc;
 use crate::config::application::Config;
 
 pub mod response;
+pub mod pagination;
 
 pub fn get_content_type(headers: HeaderMap) -> String {
     let header_value = headers.get("Content-Type");
