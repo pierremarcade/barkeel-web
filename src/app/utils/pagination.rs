@@ -7,27 +7,56 @@ pub struct PaginationQuery {
 }
 
 pub struct Pagination {
-    pub total_results: i64
+    pub current_page: usize,
+    pub per_page: usize,
+    pub offset: usize,
+    pub total_pages: i64,
+    pub total_results: i64,
 }
 
 impl Pagination {
-    fn generate_page_numbers(&self) -> Vec<String> {
+    pub fn new(pagination_query: PaginationQuery, total_results: i64) -> Self {
+        let current_page = pagination_query.page.unwrap_or(1);
+        let per_page = pagination_query.per_page.unwrap_or(10);
+        let offset = (current_page - 1) * per_page;
+        let total_pages = (total_results as f64 / per_page as f64).ceil() as i64;
+        Pagination {
+            current_page,
+            per_page,
+            offset,
+            total_pages,
+            total_results,
+        }
+    }
+    pub fn generate_page_numbers(&self) -> Vec<String> {
         let mut page_numbers = Vec::new();
-        if self.total_results <= 10 {
-            for i in 1..=self.total_results {
+        if self.total_pages <= 10 {
+            for i in 1..=self.total_pages {
                 page_numbers.push(i.to_string());
             }
         } else {
-
-            let last_page = (self.total_results + 9) / 10; // Calculer le dernier numéro de page
-            page_numbers.push("1".to_string());
-            page_numbers.push("2".to_string());
-            page_numbers.push("3".to_string());
-            if last_page > 3 {
-                page_numbers.push("...".to_string()); // Séparateur
-                page_numbers.push((last_page - 2).to_string());
-                page_numbers.push((last_page - 1).to_string());
-                page_numbers.push(last_page.to_string());
+            if (self.current_page as i64) < self.total_pages - 7 {
+                if self.current_page % 2 == 1 {
+                    page_numbers.push(self.current_page.to_string());
+                    page_numbers.push((self.current_page + 1).to_string());
+                    page_numbers.push((self.current_page + 2).to_string());
+                    page_numbers.push("...".to_string());
+                    page_numbers.push((self.total_pages - 2).to_string());
+                    page_numbers.push((self.total_pages - 1).to_string());
+                    page_numbers.push((self.total_pages).to_string());
+                } else {
+                    page_numbers.push((self.current_page - 1).to_string());
+                    page_numbers.push(self.current_page.to_string());
+                    page_numbers.push((self.current_page + 1).to_string());
+                    page_numbers.push("...".to_string());
+                    page_numbers.push((self.total_pages - 2).to_string());
+                    page_numbers.push((self.total_pages - 1).to_string());
+                    page_numbers.push((self.total_pages).to_string());
+                }
+            } else {
+                for i in (self.total_pages - 10)..=self.total_pages {
+                    page_numbers.push(i.to_string());
+                }
             }
         }
         page_numbers
