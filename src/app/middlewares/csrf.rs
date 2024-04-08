@@ -15,14 +15,14 @@ pub async fn unique_id_middleware(request: Request, next: Next) -> Response {
     let headers: &HeaderMap = request.headers();
     if let Some(cookie_header) = headers.get(header::COOKIE) {
         if let Ok(cookie_str) = cookie_header.to_str() {
-            if cookie_str.contains("unique_id=") {
+            if cookie_str.contains("session_token=") {
                 let response = next.run(request).await;
                 return response;
             }
         }
     }
     let unique_id = generate_unique_id();
-    let cookie = Cookie::build(("unique_id", unique_id)).path("/").http_only(true);
+    let cookie = Cookie::build(("session_token", unique_id)).path("/").http_only(true);
     let mut response = next.run(request).await;
     response.headers_mut().insert(
         header::SET_COOKIE,
