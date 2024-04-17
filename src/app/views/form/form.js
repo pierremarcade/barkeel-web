@@ -1,13 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
+    changeDateTimeLocalFormat();
     handleSelectAndRadioElements();
-    tinymce.init({
-        selector: 'textarea',
-        plugins: 'textpattern anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+
+    var editorElements = document.querySelectorAll('.editor');
+    editorElements.forEach(function(editorElement) {
+        var editorId = editorElement.id;
+        var textarea = document.querySelector(`textarea[data-editor-id="${editorId}"]`);
+        var initialContent = textarea ? textarea.value : '';
+        var quill = new Quill(editorElement, {
+            theme: 'snow',
+            modules: {
+                syntax: true, 
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
+            }
+        });
+        if (initialContent !== '') {
+            quill.root.innerHTML = initialContent;
+        }
+        
+        quill.on('text-change', function(delta, oldDelta, source) {
+            if (source === 'user') {
+                textarea.value = quill.root.innerHTML;
+            }
+        });
     });
+
 });
+
+function changeDateTimeLocalFormat() {
+    const form = document.querySelector('form');
+    const datetimeFields = form.querySelectorAll('input[type="datetime-local"]');
+    datetimeFields.forEach(function(field) {
+        console.log(field.id)
+        var datetime_field = document.querySelector(`input[data-datetime="${field.id}"]`);
+        field.value = datetime_field.value;
+    });
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        datetimeFields.forEach(function(field) {
+            var datetime_field = document.querySelector(`input[data-datetime="${field.id}"]`);
+            let date = new Date(field.value);
+            datetime_field.value = date.toISOString().slice(0, 19);
+            console.log(datetime_field.value)
+        });
+        form.submit();
+    });
+}
 
 function handleSelectAndRadioElements() {
     var selectElements = document.querySelectorAll('.select');
@@ -60,7 +111,7 @@ function populateSelectOptions(selectElement, data) {
 }
 
 function populateRadioOptions(radioElement, data) {
-    radioElement.innerHTML = ''; // Vider le contenu actuel
+    radioElement.innerHTML = '';
     Object.keys(data).forEach(function(key) {
         var name = radioElement.getAttribute('data-name');
         var value = data[key][radioElement.getAttribute('data-id')];
@@ -68,7 +119,7 @@ function populateRadioOptions(radioElement, data) {
         var selected = radioElement.getAttribute('data-selected');
 
         var radioHtml = createRadioInput(name, value, labelText, selected);
-        radioElement.innerHTML += radioHtml; // Ajouter le nouveau radio
+        radioElement.innerHTML += radioHtml;
     });
 }
 

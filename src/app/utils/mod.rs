@@ -23,13 +23,13 @@ pub fn csrf_token_is_valid(headers: HeaderMap, config: Arc<Config>, csrf_token: 
             for cookie in Cookie::split_parse(cookie_str) {
                 let cookie = cookie.unwrap();
                 match cookie.name() {
-                    "unique_id" => {
+                    "session_token" => {
                         let csrf_manager: &CSRFManager = &config.csrf_manager;
                         if csrf_manager.is_csrf_token_valid(cookie.value().to_string(), csrf_token.clone()) {
                             return true;
                         }
                     },
-                    _ =>  return false
+                    _ =>  {  }
                 }
             }
         }
