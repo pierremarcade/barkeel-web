@@ -24,11 +24,12 @@ tower = { version = "0.4", features = ["timeout"] }
 tower-http = { version = "0.5", features = ["cors", "normalize-path"] }
 # image = "0.25.0"
 #barkeel_derives = { git = "https://github.com/pierremarcade/barkeel-derives.git"}
-barkeel_lib = { git = "https://github.com/pierremarcade/barkeel-lib.git"}
+#barkeel_lib = { git = "https://github.com/pierremarcade/barkeel-lib.git"}
 barkeel_derives = { path = "../barkeel-derives" }
-#barkeel_lib = { path = "../barkeel-lib" }
+barkeel_lib = { path = "../barkeel-lib" }
 cookie = "0.18"
 rand = "0.8"
+bcrypt = "0.15"
 
 [dependencies.tera]
 version = "1.19"
