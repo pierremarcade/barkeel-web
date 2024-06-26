@@ -4,16 +4,21 @@
   "description": "Rust Framework",
   "main": "index.js",
   "scripts": {
-    "build:css": "npx postcss src/assets/css/main.css -o src/public/css/main.css"
+    "build:css": "npx postcss src/assets/css/main.css -o src/public/css/main.css",
+    "build:js": "npx rollup --config rollup.config.mjs "
   },
   "author": "Pierre Marcadé",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "autoprefixer": "^10.4.19",
+    "cssnano": "^7.0.3",
     "nodemon": "^3.1.0",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
-    "tailwindcss": "^3.4.3"
+    "rollup": "^4.18.0",
+    "tailwindcss": "^3.4.4",
+    "terser": "^5.31.1"
   },
   "dependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
