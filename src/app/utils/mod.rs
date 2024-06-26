@@ -36,3 +36,21 @@ pub fn csrf_token_is_valid(headers: HeaderMap, config: Arc<Config>, csrf_token: 
     }
     return false;
 }
+
+pub fn get_cookie(headers: HeaderMap) -> String {
+    let mut unique_id_cookie = String::new();
+    if let Some(cookie_header) = headers.get(header::COOKIE) {
+        if let Ok(cookie_str) = cookie_header.to_str() {
+            for cookie in Cookie::split_parse(cookie_str) {
+                let cookie = cookie.unwrap();
+                match cookie.name() {
+                    "session_token" => {
+                        unique_id_cookie = cookie.value().to_string();
+                    },
+                    _ => {}
+                }
+            }
+        }
+    }
+    unique_id_cookie
+}
