@@ -1,5 +1,5 @@
 
-use axum::{ Extension, extract::{ State, Path}, response:: { Html, IntoResponse }, http::{header, HeaderMap, StatusCode} };
+use axum::{ extract::{ State, Path}, response:: { Html, IntoResponse }, http::{header, HeaderMap, StatusCode} };
 use tera::Tera;
 use crate::config::application::Config;
 use std::sync::Arc;

@@ -5,7 +5,8 @@ use barkeel_derives::DelayedJob;
 use barkeel_lib::mailer::Email;
 use std::error::Error;
 use async_trait::async_trait;
-use serde_json::Map;
+use serde_json::{Map, Value};
+use std::env;
 
 #[derive(DelayedJob)]
 pub struct Mail;
