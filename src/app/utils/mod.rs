@@ -5,8 +5,6 @@ use cookie::Cookie;
 use std::sync::Arc;
 use crate::config::application::Config;
 
-pub mod response;
-
 pub fn get_content_type(headers: HeaderMap) -> String {
     let header_value = headers.get("Content-Type");
     let mut content_type = String::new();

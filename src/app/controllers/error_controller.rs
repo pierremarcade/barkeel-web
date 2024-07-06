@@ -4,7 +4,7 @@ use tera::{Context, Tera};
 use crate::config::application::Config;
 use std::sync::Arc;
 use tokio::time::error;
-use crate::app::utils::response::Response;
+use barkeel_lib::app::http::response::Response;
 
 pub async fn handler_404(State(config): State<Arc<Config>>) -> impl IntoResponse {
     render_404(config)
