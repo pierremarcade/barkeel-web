@@ -36,7 +36,6 @@ pub fn routes() -> Router<Arc<Config>> {
                     .layer(HandleErrorLayer::new(error_controller::handle_timeout_error))
                     .timeout(Duration::from_secs(30))
             )
-            .route_layer(middleware::from_fn(csrf::unique_id_middleware))
             .fallback(error_controller::handler_404)
             .route("/public/*path", get(index_controller::handle_assets))
 }
