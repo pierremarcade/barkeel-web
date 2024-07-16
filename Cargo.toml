@@ -31,6 +31,7 @@ cookie = "0.18"
 rand = "0.8"
 bcrypt = "0.15"
 Inflector = "*"
+validator = { version = "0.18", features = ["derive"] }
 
 [dependencies.tera]
 version = "1.20"

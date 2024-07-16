@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+    {% block content %}
+    {% if errors_message %}
+        {{ errors_message }}
+    {% endif %}
+        {{ form | safe }}
+    {% endblock content %}
