@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+    {% block content %}
+    <div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-gray-900">{{title}}</h1>
+        <p class="mt-2 text-sm text-gray-700">{{description}}</p>
+        </div>
+        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <a href="{{base_url}}/new" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add {{title}}</a>
+        </div>
+    </div>
+    <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <table class="min-w-full divide-y divide-gray-300">
+                <thead>
+                    <tr class="divide-x divide-gray-200">
+                        {% for data in datas %}
+                            {% for key, value in data %}
+                                <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900">{{ key }}</th>
+                            {% endfor %}
+                            {% break %}
+                        {% endfor %}
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                    {% for data in datas %}
+                        <tr class="divide-x divide-gray-200">
+                            {% for key, value in data %}
+                                <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ value }}</td>
+                            {% endfor %}
+                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                <a href="{{base_url}}/{{ data.id }}/edit" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+        {% include "pagination.html" %}
+    </div>
+    </div>
+{% endblock content %}
