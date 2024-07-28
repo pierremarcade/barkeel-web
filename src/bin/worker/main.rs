@@ -1,7 +1,7 @@
 use dotenvy::dotenv;
 use std::env;
 use barkeel_web::config::jobs;
-use std::sync::Arc;
+use async_std::sync::Arc;
 use barkeel_lib::workers::redis_service::RedisService;
 use barkeel_lib::workers::job::JobService;
 use barkeel_lib::workers::traits::{ RedisServiceTrait, JobServiceTrait };
@@ -9,10 +9,10 @@ use barkeel_lib::workers::ThreadPool;
 use redis::Client;
 
 #[tokio::main]
-async fn  main() -> ()  {
+async fn  main() {
     dotenv().ok();
     env_logger::init();
-    jobs::register_jobs();
+    jobs::register_jobs().await;
 
     let redis_host = env::var("REDIS_HOST").expect("REDIS_HOST must be set");
     let redis_client = Client::open(redis_host).unwrap();

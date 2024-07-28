@@ -7,10 +7,9 @@ pub struct Connector;
 impl Connector {
     pub fn connect(database_url: &String) -> Result<Pool<ConnectionManager<SqliteConnection>>, Error> {
         let manager = ConnectionManager::<SqliteConnection>::new(database_url);
-        let pool = Pool::builder()
+        Pool::builder()
             .test_on_check_out(true)
-            .build(manager);
-        pool
+            .build(manager)
     }
 }
 

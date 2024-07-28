@@ -21,11 +21,11 @@ pub async fn handle_assets(Path(path): Path<String>) -> impl IntoResponse {
     let mut headers = HeaderMap::new();
     if path == "css/main.css" {
         headers.insert(header::CONTENT_TYPE, "text/css".parse().unwrap());
-        return (StatusCode::OK, headers, MAIN_CSS);
+        (StatusCode::OK, headers, MAIN_CSS)
     } else if path == "js/main.js" {
         headers.insert(header::CONTENT_TYPE, "application/javascript".parse().unwrap());
-        return (StatusCode::OK, headers, MAIN_JS);
-    } if path == "img/favicon.svg" {
+        (StatusCode::OK, headers, MAIN_JS)
+    } else if path == "img/favicon.svg" {
         (StatusCode::OK, headers, FAVICON)
     } else {
         (StatusCode::NOT_FOUND, headers, "")

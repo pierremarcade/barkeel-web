@@ -7,10 +7,9 @@ pub struct Connector;
 impl Connector {
     pub fn connect(database_url: &String) -> Result<Pool<ConnectionManager<PgConnection>>, Error> {
         let manager = ConnectionManager::<PgConnection>::new(database_url);
-        let pool = Pool::builder()
+        Pool::builder()
             .test_on_check_out(true)
-            .build(manager);
-        pool
+            .build(manager)
     }
 }
 
