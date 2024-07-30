@@ -91,8 +91,8 @@ export function handleCheckboxElements() {
 
 export function handleAutocompleteElements() {
     const autocompleteFields = document.querySelectorAll('.autocomplete');
-    const form = document.querySelector('form');
-    if (form) {
+    // const form = document.querySelector('form');
+    // if (form) {
         const autocompleteSelectedItems = document.querySelectorAll('.autocomplete-selected-items');
         autocompleteSelectedItems.forEach(function(element) {
             element.innerHTML = '';
@@ -101,7 +101,7 @@ export function handleAutocompleteElements() {
         autocompleteFields.forEach(field => {
             field.addEventListener('input', function() {
                 const id = this.getAttribute('id');
-                const multiSelectSuggestionsList = form.querySelector(`#${id}List`);
+                const multiSelectSuggestionsList = document.querySelector(`#${id}List`);
                 if (multiSelectSuggestionsList) {
                     multiSelectSuggestionsList.innerHTML = '';
                     multiSelectSuggestionsList.style.display = "block";
@@ -122,7 +122,7 @@ export function handleAutocompleteElements() {
                 }
             });
         });
-        const multiSelectSuggestionsList = form.querySelector(`.autocomplete-list`);
+        const multiSelectSuggestionsList = document.querySelector(`.autocomplete-list`);
         if (multiSelectSuggestionsList) {
             multiSelectSuggestionsList.addEventListener('click', function(event) {
                 if (event.target.tagName.toLowerCase()!== 'li') return;
@@ -140,7 +140,7 @@ export function handleAutocompleteElements() {
                 checkbox.setAttribute("name", `${parentElementDataId}`);
                 checkbox.setAttribute("value", selectedId);
                 checkbox.setAttribute("checked", 'checked');
-                const selectedItemContainer = form.querySelector(`#${parentElementDataId}Selected`);
+                const selectedItemContainer = document.querySelector(`#${parentElementDataId}Selected`);
                 if (selectedItemContainer) {
                     const removeBtn = document.createElement('span');
                     removeBtn.className = `
@@ -174,8 +174,9 @@ export function handleAutocompleteElements() {
                 }
             });
         }
-    }
+    //}
 }
+
 
 function createRadioInput(name, value, labelText, selected) {
     return `
