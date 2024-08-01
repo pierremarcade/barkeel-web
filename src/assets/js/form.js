@@ -14,7 +14,6 @@ export function beforeSubmit() {
             const checkboxFields = document.querySelectorAll('input[type="checkbox"]');
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                console.log(checkboxFields);
                 checkboxFields.forEach(function(field) {
                     console.log(field.value);
                     if (!field.checked) {
@@ -91,92 +90,100 @@ export function handleCheckboxElements() {
 
 export function handleAutocompleteElements() {
     const autocompleteFields = document.querySelectorAll('.autocomplete');
-    // const form = document.querySelector('form');
-    // if (form) {
-        const autocompleteSelectedItems = document.querySelectorAll('.autocomplete-selected-items');
-        autocompleteSelectedItems.forEach(function(element) {
-            element.innerHTML = '';
-        });
-        let itemsSelected = [];
-        autocompleteFields.forEach(field => {
-            field.addEventListener('input', function() {
-                const id = this.getAttribute('id');
-                const multiSelectSuggestionsList = document.querySelector(`#${id}List`);
-                if (multiSelectSuggestionsList) {
-                    multiSelectSuggestionsList.innerHTML = '';
+    const autocompleteSelectedItems = document.querySelectorAll('.autocomplete-selected-items');
+    autocompleteSelectedItems.forEach(function(element) {
+        element.innerHTML = '';
+    });
+    autocompleteFields.forEach(field => {
+        field.addEventListener('input', function() {
+            const id = this.getAttribute('id');
+            const multiSelectSuggestionsList = document.querySelector(`#${id}List`);
+            if (multiSelectSuggestionsList) {
+                multiSelectSuggestionsList.innerHTML = '';
+                multiSelectSuggestionsList.style.display = "block";
+                if (this.value.length >= 3) {
                     multiSelectSuggestionsList.style.display = "block";
-                    if (this.value.length >= 3) {
-                        multiSelectSuggestionsList.style.display = "block";
-                        fetchData(`${this.getAttribute('data-url')}/${this.value}`, function(data) {
-                            Object.keys(data).forEach(function(key) {
-                                const item = document.createElement('li');
-                                item.textContent = data[key][field.getAttribute('data-label')];
-                                item.setAttribute('id', data[key][field.getAttribute('data-id')]);
-                                item.classList.add('p-2', 'hover:bg-gray-100', 'cursor-pointer');
-                                multiSelectSuggestionsList.appendChild(item);
-                            });
+                    fetchData(`${this.getAttribute('data-url')}/${this.value}`, function(data) {
+                        Object.keys(data).forEach(function(key) {
+                            const item = document.createElement('li');
+                            item.textContent = data[key][field.getAttribute('data-label')];
+                            item.setAttribute('id', data[key][field.getAttribute('data-id')]);
+                            item.classList.add('p-2', 'hover:bg-gray-100', 'cursor-pointer');
+                            multiSelectSuggestionsList.appendChild(item);
                         });
-                    } else {
-                        multiSelectSuggestionsList.style.display = "none";
-                    }
+                    });
+                } else {
+                    multiSelectSuggestionsList.style.display = "none";
                 }
-            });
+            }
         });
-        const multiSelectSuggestionsList = document.querySelector(`.autocomplete-list`);
-        if (multiSelectSuggestionsList) {
-            multiSelectSuggestionsList.addEventListener('click', function(event) {
-                if (event.target.tagName.toLowerCase()!== 'li') return;
-                multiSelectSuggestionsList.style.display = "none";
-                const selectedId = event.target.getAttribute('id');
-                if (itemsSelected.includes(selectedId)) {
-                    return;
-                }
-                itemsSelected.push(selectedId);
-                const parentElementDataId = event.target.parentElement.getAttribute('data-id');
-                const checkbox = document.createElement('input');
-                checkbox.id = `${selectedId}-autocomplete-selected`;
-                checkbox.setAttribute("type", "checkbox");
-                checkbox.setAttribute("style", "display:none");
-                checkbox.setAttribute("name", `${parentElementDataId}`);
-                checkbox.setAttribute("value", selectedId);
-                checkbox.setAttribute("checked", 'checked');
-                const selectedItemContainer = document.querySelector(`#${parentElementDataId}Selected`);
-                if (selectedItemContainer) {
-                    const removeBtn = document.createElement('span');
-                    removeBtn.className = `
-                        remove-from-list
-                        inline-flex 
-                        items-center
-                        gap-x-1.5 
-                        rounded-md 
-                        bg-indigo-600 
-                        px-3 
-                        py-2 
-                        text-sm 
-                        font-semibold 
-                        text-white 
-                        shadow-sm 
-                        hover:bg-indigo-500 
-                        focus-visible:outline 
-                        focus-visible:outline-2 
-                        focus-visible:outline-offset-2 
-                        focus-visible:outline-indigo-600
-                        `;
-                    removeBtn.textContent = event.target.textContent;
-                    removeBtn.appendChild(crossSvg());
-                    selectedItemContainer.appendChild(removeBtn);
-                    selectedItemContainer.appendChild(checkbox);
-                    removeBtn.addEventListener('click', function() {
-                        selectedItemContainer.removeChild(checkbox);
-                        selectedItemContainer.removeChild(removeBtn);
-                        itemsSelected = itemsSelected.filter(element => element!== selectedId);
-                    });     
-                }
-            });
-        }
-    //}
+    });
+    const multiSelectSuggestionsLists = document.querySelectorAll(`.autocomplete-list`);
+    multiSelectSuggestionsLists.forEach(multiSelectSuggestionsList => {
+        let itemsSelected = [];
+        multiSelectSuggestionsList.addEventListener('click', function(event) {
+            if (event.target.tagName.toLowerCase()!== 'li') return;
+            multiSelectSuggestionsList.style.display = "none";
+            const selectedId = event.target.getAttribute('id');
+            if (itemsSelected.includes(selectedId)) {
+                return;
+            }
+            itemsSelected.push(selectedId);
+            const parentElementDataId = event.target.parentElement.getAttribute('data-id');
+            const ismultiple = event.target.parentElement.getAttribute('data-multiple');
+            const checkbox = document.createElement('input');
+            checkbox.id = `${selectedId}-autocomplete-selected`;
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.setAttribute("style", "display:none");
+            checkbox.setAttribute("name", `${parentElementDataId}${ismultiple ? '[]' : null}`);
+            checkbox.setAttribute("value", selectedId);
+            checkbox.setAttribute("checked", 'checked');
+            const selectedItemContainer = document.querySelector(`#${parentElementDataId}Selected`);
+            if (selectedItemContainer) {
+                const removeBtn = document.createElement('span');
+                removeBtn.className = `
+                    remove-from-list
+                    inline-flex 
+                    items-center
+                    gap-x-1.5 
+                    rounded-md 
+                    bg-indigo-600 
+                    px-3 
+                    py-2 
+                    text-sm 
+                    font-semibold 
+                    text-white 
+                    shadow-sm 
+                    hover:bg-indigo-500 
+                    focus-visible:outline 
+                    focus-visible:outline-2 
+                    focus-visible:outline-offset-2 
+                    focus-visible:outline-indigo-600
+                    `;
+                removeBtn.textContent = event.target.textContent;
+                removeBtn.appendChild(crossSvg());
+                selectedItemContainer.appendChild(removeBtn);
+                selectedItemContainer.appendChild(checkbox);
+                removeBtn.addEventListener('click', function() {
+                    selectedItemContainer.removeChild(checkbox);
+                    selectedItemContainer.removeChild(removeBtn);
+                    itemsSelected = itemsSelected.filter(element => element!== selectedId);
+                    handleInputAutocompleState(itemsSelected, parentElementDataId, ismultiple)
+                });     
+            }
+            handleInputAutocompleState(itemsSelected, parentElementDataId, ismultiple);
+        });
+    });
 }
 
+function handleInputAutocompleState(itemsSelected, parentElementDataId, ismultiple) {
+    const inputParent = document.getElementById(parentElementDataId);
+    if (itemsSelected >= 1 && !ismultiple) {
+        inputParent.disabled = true;
+    } else {
+        inputParent.disabled = false;
+    }
+}
 
 function createRadioInput(name, value, labelText, selected) {
     return `
