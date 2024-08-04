@@ -28,7 +28,7 @@ macro_rules! resource_routes {
 }
 
 //Add here new route
-pub fn routes() -> Router<Arc<Config>> {
+pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
     Router::new()
             .route("/", get(index_controller::index))
             .layer(
