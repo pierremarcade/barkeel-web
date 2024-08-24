@@ -1,7 +1,6 @@
 use dotenvy::dotenv;
 use crate::config::routes;
 use tower_http::cors::{Any, CorsLayer};
-use std::sync::Arc;
 #[cfg(feature = "postgres")]
 use crate::config::database::postgres::{Connector, Database};
 #[cfg(feature = "mysql")]
@@ -70,7 +69,7 @@ impl Loader {
         };
         let database = Self::init_database()?;
         let csrf_manager = CSRFManager::new();
-        let config = Arc::new(Config { database: database.clone(), template: tera, csrf_manager });
+        let config = Config { database: database.clone(), template: tera, csrf_manager };
         let cors = CorsLayer::new().allow_origin(Any);
 
         let routes = Router::new()

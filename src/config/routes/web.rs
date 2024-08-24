@@ -3,7 +3,6 @@ use axum::{
     Router,
     error_handling::HandleErrorLayer
 };
-use std::sync::Arc;
 use crate::config::application::Config;
 use crate::app::controllers::*;
 use std::time::Duration;
@@ -11,7 +10,7 @@ use tower::ServiceBuilder;
 use inflector::Inflector;
 
 //Add here new route
-pub fn routes(config: Arc<Config>) -> Router<Arc<Config>> {
+pub fn routes(config: Config) -> Router<Config> {
     Router::new()
         .route("/", get(index_controller::index))
         .layer(
