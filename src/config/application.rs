@@ -14,7 +14,6 @@ use axum::{extract::DefaultBodyLimit, Router};
 use tower::layer::Layer;
 use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
 use barkeel_lib::session::CSRFManager;
-use unic_langid::{LanguageIdentifier, langid};
 use fluent_templates::{ FluentLoader, static_loader};
 
 static_loader! {
