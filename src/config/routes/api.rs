@@ -1,5 +1,5 @@
 use axum::{ routing::get, Router };
-use crate::config::application::Config;
+use barkeel_lib::app::Config;
 use crate::app::controllers::api::*;
 
 //Add here new route

@@ -1,7 +1,7 @@
 
 use axum::{ extract::{ State, Path}, response:: { Html, IntoResponse }, http::{header, HeaderMap, StatusCode} };
 use tera::Tera;
-use crate::config::application::Config;
+use barkeel_lib::app::Config;
 use tera::Context;
 
 static MAIN_CSS: &str = include_str!("../../public/css/main.css");

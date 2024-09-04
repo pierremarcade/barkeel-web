@@ -3,7 +3,7 @@ use axum::{
     Router,
     error_handling::HandleErrorLayer
 };
-use crate::config::application::Config;
+use barkeel_lib::app::Config;
 use crate::app::controllers::*;
 use std::time::Duration;
 use tower::ServiceBuilder;
