@@ -66,7 +66,6 @@ impl Loader {
         let cors = CorsLayer::new().allow_origin(Any);
 
         let routes = Router::new()
-        .nest("/api", routes::api::routes(config.clone()))
         .nest("/", routes::web::routes(config.clone()))
         .nest("/:locale", routes::web::routes(config.clone()));
         let app = NormalizePathLayer::trim_trailing_slash().layer(routes.with_state(config.clone())

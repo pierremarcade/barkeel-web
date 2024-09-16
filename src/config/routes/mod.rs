@@ -14,5 +14,4 @@ macro_rules! resource_routes {
     };
 }
 
-pub mod api;
 pub mod web;
