@@ -9,33 +9,34 @@ rust-version = "1.81"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+diesel = { version = "2.2" }
 axum =  { version = "0.7", features = ["multipart"] }
-redis = { version = "0.26", features = ["aio", "tokio-comp"] }
+redis = { version = "0.27", features = ["aio", "tokio-comp"] }
 async-trait = "0.1"
 chrono = { version = "0.4", features = ["serde"] }
 serde = "1.0"
 serde_json = "1.0"
-diesel = { version = "2.2", features = ["extras"] }
+
 dotenvy = "0.15"
 env_logger = "0.11"
 tokio = { version = "1.40", features = ["sync"] }
 tower = { version = "0.5", features = ["timeout"] }
 tower-http = { version = "0.5", features = ["cors", "normalize-path", "fs"] }
 #barkeel_derives = { git = "https://github.com/pierremarcade/barkeel-derives.git"}
-#barkeel_lib = { git = "https://github.com/pierremarcade/barkeel-lib.git", features = ["full", "postgres"] }
+#barkeel_lib = { git = "https://github.com/pierremarcade/barkeel-lib.git", default-features = false }
 barkeel_derives = { path = "../barkeel-derives" }
-barkeel_lib = { path = "../barkeel-lib", features = ["full", "postgres"] }
+barkeel_lib = { path = "../barkeel-lib", default-features = false}
 cookie = "0.18"
-rand = "0.8.5"
-jwt = "0.16.0"
-hmac = "0.12.1"
-sha2 = "0.10.8"
+rand = "0.8"
+jwt = "0.16"
+hmac = "0.12"
+sha2 = "0.10"
 bcrypt = "0.15"
 Inflector = "*"
 validator = { version = "0.18", features = ["derive"] }
-async-std = "=1.12.0"
+async-std = "=1.13.0"
 fluent-templates = { version = "*", features = ["tera"] }
-unic-langid = "0.9.5"
+unic-langid = "0.9"
 
 [dependencies.tera]
 version = "1.20"
@@ -43,9 +44,9 @@ optional = true
 
 [features]
 default = ["postgres", "web"]
-postgres = ["diesel/postgres"]
-mysql = ["diesel/mysql"]
-sqlite = ["diesel/sqlite"]
+postgres = ["diesel/postgres", "diesel/extras", "barkeel_lib/full", "barkeel_lib/postgres"]
+mysql = ["diesel/extras", "diesel/mysql", "barkeel_lib/full", "barkeel_lib/mysql"]
+sqlite = ["diesel/extras", "diesel/sqlite", "barkeel_lib/full", "barkeel_lib/sqlite"]
 web= ["tera"]
 api= []
 
