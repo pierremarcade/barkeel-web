@@ -45,6 +45,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Your Name - [@barkeel_](https://twitter.com/barkeel_) - pierremarcade@gmail.com
+Pierre MARCADE - [@barkeel_](https://twitter.com/barkeel_) - pierremarcade@gmail.com
 
 Project Link: [https://github.com/pierremarcade/barkeel-web](https://github.com/pierremarcade/barkeel-web)
