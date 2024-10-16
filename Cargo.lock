@@ -3,16 +3,6 @@
 version = 3
 
 [[package]]
-name = "Inflector"
-version = "0.11.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe438c63458706e03479442743baae6c88256498e6431708f6dfc520a26515d3"
-dependencies = [
- "lazy_static",
- "regex",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -716,8 +706,8 @@ dependencies = [
 name = "barkeel_derives"
 version = "0.1.0"
 dependencies = [
- "Inflector",
  "barkeel_lib",
+ "cruet",
  "proc-macro2",
  "quote",
  "syn 2.0.77",
@@ -736,6 +726,7 @@ dependencies = [
  "axum",
  "bytes",
  "chrono",
+ "cookie",
  "crossbeam-channel",
  "diesel",
  "dotenvy",
@@ -754,13 +745,13 @@ dependencies = [
  "sha2",
  "tera",
  "tokio",
+ "unic-langid",
 ]
 
 [[package]]
 name = "barkeel_web"
 version = "0.1.0"
 dependencies = [
- "Inflector",
  "async-std",
  "async-trait",
  "axum",
@@ -769,6 +760,7 @@ dependencies = [
  "bcrypt",
  "chrono",
  "cookie",
+ "cruet",
  "diesel",
  "dotenvy",
  "env_logger",
@@ -1123,6 +1115,16 @@ name = "crossbeam-utils"
 version = "0.8.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22ec99545bb0ed0ea7bb9b8e1e9122ea386ff8a48c0922e43f36d45ab09e0e80"
+
+[[package]]
+name = "cruet"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6132609543972496bc97b1e01f1ce6586768870aeb4cabeb3385f4e05b5caead"
+dependencies = [
+ "once_cell",
+ "regex",
+]
 
 [[package]]
 name = "crypto-bigint"
@@ -3643,9 +3645,9 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.5.2"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e9cd434a998747dd2c4276bc96ee2e0c7a2eadf3cae88e52be55a05fa9053f5"
+checksum = "8437150ab6bbc8c5f0f519e3d5ed4aa883a83dd4cdd3d1b21f9482936046cb97"
 dependencies = [
  "bitflags",
  "bytes",

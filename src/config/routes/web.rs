@@ -4,6 +4,7 @@ use axum::{
     error_handling::HandleErrorLayer
 };
 use barkeel_lib::app::Config;
+use barkeel_lib::resource_routes;
 use crate::app::controllers::*;
 use std::time::Duration;
 use tower::ServiceBuilder;
