@@ -20,6 +20,7 @@ impl JobTrait for Mail {
                 to: String::from("default@example.com"),
                 subject: String::from("Default Subject"),
                 body: String::from("Default Body"),
+                plain_text: Some(String::from("Default Body")),
             };
             for arg in args {
                 let map: Map<String, serde_json::Value> = serde_json::from_value(arg).expect("Failed to parse argument");
@@ -30,6 +31,7 @@ impl JobTrait for Mail {
                         "to" => email.to = value.as_str().unwrap_or("default@example.com").to_string(),
                         "subject" => email.subject = value.as_str().unwrap_or("Default Subject").to_string(),
                         "body" => email.body = value.as_str().unwrap_or("Default Body").to_string(),
+                        "plain_text" => email.plain_text = Some(value.as_str().unwrap_or("Default plan text").to_string()),
                         _ => {}
                     }
                 }

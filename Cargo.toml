@@ -31,7 +31,7 @@ jwt = "0.16"
 hmac = "0.12"
 sha2 = "0.10"
 bcrypt = "0.15"
-Inflector = "*"
+cruet = "*"
 validator = { version = "0.18", features = ["derive"] }
 async-std = "=1.13.0"
 fluent-templates = { version = "*", features = ["tera"] }
