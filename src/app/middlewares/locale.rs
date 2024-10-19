@@ -23,20 +23,22 @@ pub(crate) async fn change_locale(request: Request, next: Next) -> axum::respons
                 .collect();
             let locale_cookie = cookies.iter().find(|cookie| cookie.name() == LOCALE_COOKIE_NAME);
             match locale_cookie {
-                Some(cookie) => cookie.clone().into_owned(),
-                None => Cookie::new(LOCALE_COOKIE_NAME, DEFAULT_LOCALE),
+                Some(cookie) => {
+                    let mut cookie = cookie.clone().into_owned();
+                    cookie.set_path("/");
+                    cookie.set_http_only(true);
+                    cookie
+                },
+                None => Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE)).path("/").http_only(true).into(),
             }
         },
-        None => Cookie::new(LOCALE_COOKIE_NAME, DEFAULT_LOCALE),
+        None => Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE)).path("/").http_only(true).into(),
     };
 
     let (mut parts, body) = request.into_parts();
     let params: Query<LocaleQuery> = parts.extract().await.expect("REASON");
-    match &params.locale {
-        Some(locale) => {
-            cookie.set_value(locale);
-        },
-        None => {},
+    if let Some(locale) = &params.locale {
+        cookie.set_value(locale);
     }
     let request = Request::from_parts(parts, body);
     let mut response = next.run(request).await;

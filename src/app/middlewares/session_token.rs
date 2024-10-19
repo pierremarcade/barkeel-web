@@ -14,13 +14,30 @@ pub struct UniqueId(pub String);
 pub async fn unique_id_middleware(request: Request, next: Next) -> Response {
     let headers: &HeaderMap = request.headers();
     if let Some(cookie_header) = headers.get(header::COOKIE) {
-        if let Ok(cookie_str) = cookie_header.to_str() {
-            if cookie_str.contains(format!("{}=", SESSION_COOKIE_NAME).as_str()) {
-                let response = next.run(request).await;
-                return response;
+        let cookies: Vec<Cookie> = cookie_header.to_str().unwrap_or_default()
+                .split(';').filter_map(|s| s.trim().parse::<Cookie>().ok())
+                .collect();
+            let session_cookie = cookies.iter().find(|cookie| cookie.name() == SESSION_COOKIE_NAME);
+            match session_cookie {
+                Some(cookie) => {
+                    let value = cookie.value().to_string();
+                    let csrf_manager = CSRFManager::new();
+                    if csrf_manager.is_token_valid(value) {
+                        let response = next.run(request).await;
+                        return response;
+                    } else {
+                        return set_token_cookie(request, next).await;
+                    }
+                },
+                None => {
+                    return set_token_cookie(request, next).await;
+                },
             }
-        }
     }
+    set_token_cookie(request, next).await
+}
+
+async fn set_token_cookie(request: Request, next: Next) -> Response{
     let csrf_manager = CSRFManager::new();
     let unique_id = csrf_manager.generate_csrf_token();
     let cookie = Cookie::build((SESSION_COOKIE_NAME, unique_id)).path("/").http_only(true);
