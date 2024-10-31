@@ -1,6 +1,5 @@
 use axum::http::Method;
 use axum::{extract::DefaultBodyLimit, http::HeaderValue, Router};
-use barkeel_lib::app::Config;
 use barkeel_lib::session::CSRFManager;
 use dotenvy::dotenv;
 use tower_http::cors::{ Any, AllowOrigin, CorsLayer };
@@ -15,7 +14,6 @@ use barkeel_lib::database::sqlite::{Connector, Database};
 use barkeel_lib::app::Config;
 use tera::Tera;
 use std::error::Error;
-use axum::{Extension, extract::DefaultBodyLimit, Router};
 use tower::layer::Layer;
 use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
 use fluent_templates::{ FluentLoader, static_loader};
@@ -25,7 +23,6 @@ use std::time::SystemTime;
 use crate::app::models::auth::AuthState;
 use crate::config::routes;
 
-use crate::config::routes;
 static_loader! {
     pub static LOCALES = {
         locales: "src/locales",
