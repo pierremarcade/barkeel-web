@@ -4,9 +4,6 @@ use axum::{
     response::Response,
     middleware::Next,
     extract::Request,
-    http::{header, HeaderMap, HeaderValue},
-    middleware::Next,
-    response::Response,
 };
 use barkeel_lib::session::CSRFManager;
 use cookie::Cookie;

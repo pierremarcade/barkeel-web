@@ -18,7 +18,6 @@ use std::error::Error;
 use axum::{Extension, extract::DefaultBodyLimit, Router};
 use tower::layer::Layer;
 use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
-use barkeel_lib::session::CSRFManager;
 use fluent_templates::{ FluentLoader, static_loader};
 use log::LevelFilter;
 use std::time::SystemTime;
