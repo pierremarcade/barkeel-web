@@ -82,7 +82,8 @@ impl Loader {
         // Create a new CSRF manager instance
         let csrf_manager = CSRFManager::new();
         let config = Config { database: database.clone(), template: tera, csrf_manager };
-        let cors = CorsLayer::new().allow_origin(Any);
+        // Initialize CORS settings
+        let cors = Self::init_cors();
 
         let routes = Router::new()
         .nest("/", routes::web::routes(config.clone()))
