@@ -1,13 +1,9 @@
-use crate::config::constants::{DEFAULT_LOCALE, LOCALE_COOKIE_NAME};
-use axum::extract::Query;
-use axum::RequestPartsExt;
-use axum::{
-    extract::Request,
-    http::{header, HeaderValue},
-    middleware::Next,
-};
+use axum::{ http::{ header, HeaderValue }, middleware::Next, extract::Request };
 use cookie::Cookie;
 use serde::Deserialize;
+use axum::extract::Query;
+use axum::RequestPartsExt;
+use crate::config::constants::{ LOCALE_COOKIE_NAME, DEFAULT_LOCALE };
 
 #[derive(Deserialize, Debug)]
 pub struct LocaleQuery {
@@ -34,16 +30,15 @@ pub(crate) async fn change_locale(request: Request, next: Next) -> axum::respons
                     cookie.set_http_only(true);
                     cookie
                 }
-                None => Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE))
-                    .path("/")
-                    .http_only(true)
-                    .into(),
+                None =>
+                    Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE))
+                        .path("/")
+                        .http_only(true)
+                        .into(),
             }
         }
-        None => Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE))
-            .path("/")
-            .http_only(true)
-            .into(),
+        None =>
+            Cookie::build((LOCALE_COOKIE_NAME, DEFAULT_LOCALE)).path("/").http_only(true).into(),
     };
 
     let (mut parts, body) = request.into_parts();
@@ -53,9 +48,8 @@ pub(crate) async fn change_locale(request: Request, next: Next) -> axum::respons
     }
     let request = Request::from_parts(parts, body);
     let mut response = next.run(request).await;
-    response.headers_mut().insert(
-        header::SET_COOKIE,
-        HeaderValue::from_str(&cookie.to_string()).unwrap(),
-    );
+    response
+        .headers_mut()
+        .insert(header::SET_COOKIE, HeaderValue::from_str(&cookie.to_string()).unwrap());
     response
 }

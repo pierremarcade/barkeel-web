@@ -3,21 +3,28 @@ use axum::{extract::DefaultBodyLimit, http::HeaderValue, Router};
 use barkeel_lib::app::Config;
 use barkeel_lib::session::CSRFManager;
 use dotenvy::dotenv;
-use fluent_templates::{static_loader, FluentLoader};
-use log::LevelFilter;
-use std::error::Error;
-use std::time::SystemTime;
-use tera::Tera;
-use tower::layer::Layer;
-use tower_http::cors::{AllowOrigin, Any, CorsLayer};
-use tower_http::normalize_path::{NormalizePath, NormalizePathLayer};
-
+use tower_http::cors::{ Any, AllowOrigin, CorsLayer };
+#[cfg(feature = "postgres")]
+use barkeel_lib::database::postgres::{Connector, Database};
 #[cfg(feature = "mysql")]
 use barkeel_lib::database::mysql::{Connector, Database};
 #[cfg(feature = "postgres")]
 use barkeel_lib::database::postgres::{Connector, Database};
 #[cfg(feature = "sqlite")]
 use barkeel_lib::database::sqlite::{Connector, Database};
+use barkeel_lib::app::Config;
+use tera::Tera;
+use std::error::Error;
+use axum::{Extension, extract::DefaultBodyLimit, Router};
+use tower::layer::Layer;
+use tower_http::normalize_path::{ NormalizePathLayer, NormalizePath };
+use barkeel_lib::session::CSRFManager;
+use fluent_templates::{ FluentLoader, static_loader};
+use log::LevelFilter;
+use std::time::SystemTime;
+
+use crate::app::models::auth::AuthState;
+use crate::config::routes;
 
 use crate::config::routes;
 static_loader! {
@@ -36,13 +43,13 @@ impl Loader {
         dotenv().ok();
         // Initialize the logger
         Self::setup_logger()?;
-        match Self::check_env_vars() {
-            Ok(()) => {
-                Self::init_server_web().await?;
-                Ok(())
-            }
-            Err(e) => Err(e),
-        }
+		match Self::check_env_vars() {
+			Ok(()) => {
+				Self::init_server_web().await?;
+				Ok(())
+			},
+			Err(e) => Err(e),
+		}   
     }
 
     fn init_template() -> Result<Tera, Box<dyn std::error::Error>> {
@@ -80,24 +87,15 @@ impl Loader {
         let database = Self::init_database()?;
         // Create a new CSRF manager instance
         let csrf_manager = CSRFManager::new();
-        // Create a configuration object with the database, templates, and CSRF manager
-        let config = Config {
-            database: database.clone(),
-            template: tera,
-            csrf_manager,
-        };
-        // Initialize CORS settings
-        let cors = Self::init_cors();
-        // Initialize the routes with the configuration
-        let routes = routes::web::routes(config.clone());
+        let config = Config { database: database.clone(), template: tera, csrf_manager };
+        let cors = CorsLayer::new().allow_origin(Any);
 
-        let app = NormalizePathLayer::trim_trailing_slash().layer(
-            routes
-                .with_state(config.clone())
-                .layer(cors)
-                .layer(DefaultBodyLimit::disable()),
-        );
-
+        let routes = Router::new()
+        .nest("/", routes::web::routes(config.clone()))
+        .nest("/:locale", routes::web::routes(config.clone()));
+        let app = NormalizePathLayer::trim_trailing_slash().layer(routes.with_state(config.clone())
+        .layer(cors).layer(Extension(AuthState(None))).layer(DefaultBodyLimit::disable()));
+        
         let host = std::env::var("HOST")?;
         let listener = tokio::net::TcpListener::bind(host).await?;
 
@@ -134,20 +132,22 @@ impl Loader {
         Ok(Database::new(pool))
     }
 
-    fn check_env_vars() -> Result<(), Box<dyn std::error::Error>> {
-        let required_vars = vec!["HOST", "DATABASE_URL"];
-        for var in required_vars {
-            if std::env::var(var).is_err() {
-                return Err(format!("{} variable must be defined", var).into());
-            }
-        }
-        Ok(())
-    }
+	fn check_env_vars() -> Result<(), Box<dyn std::error::Error>> {
+		let required_vars = vec!["HOST", "DATABASE_URL"];
+		for var in required_vars {
+			if std::env::var(var).is_err() {
+				return Err(format!("{} variable must be defined", var).into());
+			}
+		}
+		Ok(())
+	}
 
     fn log_level() -> Result<LevelFilter, Box<dyn std::error::Error>> {
-        match std::env::var("LOG_LEVEL")
-            .unwrap_or_else(|_| "info".to_string())
-            .as_str()
+        match
+            std::env
+                ::var("LOG_LEVEL")
+                .unwrap_or_else(|_| "info".to_string())
+                .as_str()
         {
             "off" => Ok(LevelFilter::Off),
             "error" => Ok(LevelFilter::Error),
@@ -174,11 +174,7 @@ impl Loader {
             })
             .level(log_level)
             .chain(std::io::stdout())
-            .chain(fern::log_file(
-                std::env::var("LOG_PATH")
-                    .unwrap_or_else(|_| "output.log".to_string())
-                    .as_str(),
-            )?)
+            .chain(fern::log_file( std::env::var("LOG_PATH").unwrap_or_else(|_| "output.log".to_string()).as_str())?)
             .apply()?;
         Ok(())
     }

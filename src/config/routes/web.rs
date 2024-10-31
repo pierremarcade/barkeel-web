@@ -6,6 +6,7 @@ use axum::{
 use barkeel_lib::app::Config;
 use barkeel_lib::resource_routes;
 use crate::app::controllers::*;
+use cruet::Inflector;
 use std::time::Duration;
 use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
