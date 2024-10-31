@@ -1,10 +1,8 @@
 use axum::http::Method;
-use axum::{extract::DefaultBodyLimit, http::HeaderValue, Router};
+use axum::{Extension, extract::DefaultBodyLimit, http::HeaderValue, Router};
 use barkeel_lib::session::CSRFManager;
 use dotenvy::dotenv;
 use tower_http::cors::{ Any, AllowOrigin, CorsLayer };
-#[cfg(feature = "postgres")]
-use barkeel_lib::database::postgres::{Connector, Database};
 #[cfg(feature = "mysql")]
 use barkeel_lib::database::mysql::{Connector, Database};
 #[cfg(feature = "postgres")]
