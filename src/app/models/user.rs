@@ -16,7 +16,8 @@ use barkeel_lib::database::lower;
 #[diesel(table_name = crate::db::schema::users)]
 pub struct User {
     pub id: i32,
-    pub name: String,
+    pub firstname: String,
+    pub lastname: String,
     pub email: String,
     pub password: String,
     pub session_token: Option<String>,
