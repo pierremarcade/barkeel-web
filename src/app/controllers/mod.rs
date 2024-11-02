@@ -7,3 +7,4 @@ barkeel_lib::template_handler!();
 
 pub mod index_controller;
 pub mod error_controller;
+pub mod auth_controller;

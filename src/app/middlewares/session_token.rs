@@ -1,12 +1,12 @@
-use crate::config::constants::SESSION_COOKIE_NAME;
 use axum::{
     http::{ header, HeaderValue, HeaderMap },
     response::Response,
     middleware::Next,
     extract::Request,
 };
-use barkeel_lib::session::CSRFManager;
 use cookie::Cookie;
+use barkeel_lib::session::CSRFManager;
+use crate::config::constants::{SESSION_COOKIE_NAME, SESSION_COOKIE_LIFETIME};
 
 #[derive(Clone)]
 pub struct UniqueId(pub String);
@@ -42,7 +42,7 @@ pub async fn unique_id_middleware(request: Request, next: Next) -> Response {
 
 async fn set_token_cookie(request: Request, next: Next) -> Response {
     let csrf_manager = CSRFManager::new();
-    let unique_id = csrf_manager.generate_csrf_token(2*60*60);
+    let unique_id = csrf_manager.generate_csrf_token(SESSION_COOKIE_LIFETIME);
     let mut cookie = Cookie::build((SESSION_COOKIE_NAME, unique_id)).path("/").http_only(true);
     if request.uri().scheme_str() == Some("https") {
         cookie = cookie.secure(true);
