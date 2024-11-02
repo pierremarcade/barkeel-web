@@ -687,6 +687,7 @@ dependencies = [
  "jsonwebtoken",
  "lazy_static",
  "lettre",
+ "mime_guess",
  "num_cpus",
  "r2d2",
  "rand",

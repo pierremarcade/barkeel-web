@@ -21,6 +21,7 @@ impl JobTrait for Mail {
                 subject: String::from("Default Subject"),
                 body: String::from("Default Body"),
                 plain_text: Some(String::from("Default Body")),
+                attachments: vec![],
             };
             for arg in args {
                 let map: Map<String, serde_json::Value> = serde_json::from_value(arg).expect("Failed to parse argument");
